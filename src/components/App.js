@@ -31,38 +31,38 @@ class App extends Component {
   }
 
   async loadBlockchainData() {
-    const web3 = window.web3
+    const web3 = window.web3;
     // Load account
-    const accounts = await web3.eth.getAccounts()
-    this.setState({ account: accounts[0] })
+    const accounts = await web3.eth.getAccounts();
+    this.setState({ account: accounts[0] });
     // Network ID
-    const networkId = await web3.eth.net.getId()
-    const networkData = DTube.networks[networkId]
-    if(networkData) {
-      const dtube = new web3.eth.Contract(DTube.abi, networkData.address)
-      this.setState({ dtube })
-      const videosCount = await dtube.methods.videoCount().call()
-      this.setState({ videosCount })
+    const networkId = await web3.eth.net.getId();
+    const networkData = DTube.networks[networkId];
+    if (networkData) {
+      const dtube = new web3.eth.Contract(DTube.abi, networkData.address);
+      this.setState({ dtube });
+      const videosCount = await dtube.methods.videoCount().call();
+      this.setState({ videosCount });
       // Load videos, sort by newest
-      for (var i=videosCount; i>=1; i--) {
-        const video = await dtube.methods.videos(i).call()
+      for (var i = videosCount; i >= 1; i--) {
+        const video = await dtube.methods.videos(i).call();
         this.setState({
-          videos: [...this.state.videos, video]
-        })
+          videos: [...this.state.videos, video],
+        });
       }
-      //Set latest video with title to view as default 
-      const latest = await dtube.methods.videos(videosCount).call()
+      //Set latest video with title to view as default
+      const latest = await dtube.methods.videos(videosCount).call();
       this.setState({
         currentHash: latest.hash,
-        currentTitle: latest.title
-      })
-      this.setState({ loading: false})
+        currentTitle: latest.title,
+      });
+      this.setState({ loading: false });
     } else {
-      window.alert('DTube contract not deployed to detected network.')
+      window.alert("DTube contract not deployed to detected network.");
     }
   }
 
-  captureFile = event => {
+  captureFile = (event) => {
     event.preventDefault()
     const file = event.target.files[0]
     const reader = new window.FileReader()
